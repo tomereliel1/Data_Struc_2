@@ -1,0 +1,54 @@
+template <typename T>
+class Node{
+private:
+    int m_id;
+    T* m_data;
+    Node* m_next;
+public:
+    Node(int id, T* data);
+
+    int getId() const;
+
+    T* getData() const;
+
+    Node<T>* getNext() const;
+
+    void setId(int id);
+
+    void setData(T* data);
+
+    void setNext(Node* next);
+};
+
+template <typename T>
+Node<T>::Node(int id, T *data): m_id(id), m_data(data), m_next(nullptr) {}
+
+template <typename T>
+int Node<T>::getId() const {
+    return m_id;
+}
+
+template <typename T>
+T* Node<T>::getData() const {
+    return m_data;
+}
+
+template <typename T>
+Node<T>* Node<T>::getNext() const {
+    return m_next;
+}
+
+template <typename T>
+void Node<T>::setId(int id) {
+    m_id = id;
+}
+
+template <typename T>
+void Node<T>::setData(T *data) {
+    m_data = data;
+}
+
+template <typename T>
+void Node<T>::setNext(Node<T> *next) {
+    m_next = next;
+}

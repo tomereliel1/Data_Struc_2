@@ -12,12 +12,15 @@
 
 #ifndef PLAINS25WINTER_WET1_H_
 #define PLAINS25WINTER_WET1_H_
-
+#include "Jockey.h"
 #include "wet2util.h"
 
 class Plains {
 private:
     //
+    Jockey** jockeyTable;
+    int m_jockeyNum;
+    int m_jockeyTableSize;
     // Here you may add anything you want
     //
     

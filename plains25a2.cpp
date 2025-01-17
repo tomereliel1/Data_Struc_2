@@ -6,7 +6,11 @@
 
 Plains::Plains()
 {
-    
+    jockeyTable = new Jockey*[2];
+    jockeyTable[0] = nullptr;
+    jockeyTable[1] = nullptr;
+    m_jockeyNum = 0;
+    m_jockeyTableSize = 2;
 }
 
 Plains::~Plains()
@@ -21,6 +25,12 @@ StatusType Plains::add_team(int teamId)
 
 StatusType Plains::add_jockey(int jockeyId, int teamId)
 {
+    if (jockeyId <=0 || teamId <= 0){
+        return StatusType::INVALID_INPUT;
+    }
+    if (jockeyTable[jockeyId % m_jockeyTableSize] == nullptr){
+        Jockey* newJockey =
+    }
     return StatusType::FAILURE;
 }
 
