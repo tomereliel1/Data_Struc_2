@@ -14,6 +14,10 @@ int Jockey::getRecord() const {
     return m_record;
 }
 
+int Jockey::getTeamId() const {
+    return m_teamId;
+}
+
 void Jockey::setNextJockey(Jockey *jockey) {
     m_nextJockey = jockey;
 }

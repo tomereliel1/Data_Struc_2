@@ -13,12 +13,18 @@
 #ifndef PLAINS25WINTER_WET1_H_
 #define PLAINS25WINTER_WET1_H_
 #include "Jockey.h"
+#include "Team.h"
+#include "Node.h"
+#include "HashTable.h"
 #include "wet2util.h"
+#include <iostream>
+using namespace std;
 
 class Plains {
 private:
-    //
-    Jockey** jockeyTable;
+    HashTable<Jockey> jockeysTable;
+    HashTable<Team> teamsIdTable;
+    HashTable<Team> teamsRecordTable;
     int m_jockeyNum;
     int m_jockeyTableSize;
     // Here you may add anything you want

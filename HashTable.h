@@ -15,7 +15,7 @@ public:
 
     Node<T>* find(int key);
 
-    Node<T> * insert(Node<T>* node);
+    void insert(Node<T>* node);
 
     void remove(int key);
 };
@@ -45,10 +45,10 @@ Node<T>* HashTable<T>::find(int key) {
 }
 
 template <typename T>
-Node<T>* HashTable<T>::insert(Node<T> *node) {
+void HashTable<T>::insert(Node<T> *node) {
     int key = node->getId();
     if (this->find(key) != nullptr){
-        return nullptr;
+        return;
     } else if (m_keysNum + 1 == m_size / 2) {
         int oldSize = m_size;
         m_size = 2 * oldSize;
@@ -69,9 +69,8 @@ Node<T>* HashTable<T>::insert(Node<T> *node) {
         }
         delete [] temp;
     }
-    insertToArr(m_arr, node);
+    insertToArr(node);
     m_keysNum++;
-    return node;
 }
 
 

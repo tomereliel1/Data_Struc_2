@@ -4,7 +4,7 @@ class Jockey {
     //Team * m_team;
     int m_record;
     Jockey* m_nextJockey;
-public :
+public:
     Jockey(int id, int teamId/*Team* team*/);
 
     void updateVictory();
@@ -12,6 +12,8 @@ public :
     void updateLoss();
 
     int getRecord() const;
+
+    int getTeamId() const;
 
     void setNextJockey(Jockey* jockey);
 

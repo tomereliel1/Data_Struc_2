@@ -1,27 +1,30 @@
+#include <memory>
+using std::shared_ptr;
+
 template <typename T>
 class Node{
 private:
     int m_id;
-    T* m_data;
+    shared_ptr<T> m_data;
     Node* m_next;
 public:
-    Node(int id, T* data);
+    Node(int id, shared_ptr<T> data);
 
     int getId() const;
 
-    T* getData() const;
+    shared_ptr<T> getData() const;
 
     Node<T>* getNext() const;
 
     void setId(int id);
 
-    void setData(T* data);
+    void setData(shared_ptr<T> data);
 
     void setNext(Node* next);
 };
 
 template <typename T>
-Node<T>::Node(int id, T *data): m_id(id), m_data(data), m_next(nullptr) {}
+Node<T>::Node(int id, shared_ptr<T> data): m_id(id), m_data(data), m_next(nullptr) {}
 
 template <typename T>
 int Node<T>::getId() const {
@@ -29,7 +32,7 @@ int Node<T>::getId() const {
 }
 
 template <typename T>
-T* Node<T>::getData() const {
+shared_ptr<T> Node<T>::getData() const {
     return m_data;
 }
 
@@ -44,7 +47,7 @@ void Node<T>::setId(int id) {
 }
 
 template <typename T>
-void Node<T>::setData(T *data) {
+void Node<T>::setData(shared_ptr<T> data) {
     m_data = data;
 }
 
