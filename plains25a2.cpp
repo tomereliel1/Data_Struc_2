@@ -110,5 +110,17 @@ output_t<int> Plains::get_jockey_record(int jockeyId)
 
 output_t<int> Plains::get_team_record(int teamId)
 {
+    if (teamId <= 0){
+        return {StatusType::INVALID_INPUT};
+    }
+    Node<Team>* teamNode = teamsIdTable.find(teamId);
+    if (teamNode == nullptr){
+        return {StatusType::FAILURE};
+    }
+    shared_ptr<Team> team = teamNode->getData();
+    if (team->getParent() != nullptr){
+        return {StatusType::FAILURE};
+    }
+    return team->getRecord();
     return 0;
 }
