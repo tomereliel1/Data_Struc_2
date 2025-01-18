@@ -21,6 +21,8 @@ public:
 
     int getRecord() const;
 
+    int getId() const;
+
     shared_ptr<Team> getParent() const;
 
     shared_ptr<Team> getRoot();

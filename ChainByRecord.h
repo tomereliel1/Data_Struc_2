@@ -11,4 +11,8 @@ public:
     void add(Node<Team>* node);
 
     Node<Team>* remove(int id);
+
+    Node<Team>* getChain() const;
+
+    int getSize () const;
 };

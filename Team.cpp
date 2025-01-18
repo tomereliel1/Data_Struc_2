@@ -14,6 +14,10 @@ int Team::getRecord() const {
     return m_record;
 }
 
+int Team::getId() const {
+    return m_id;
+}
+
 void Team::setParent(shared_ptr<Team> team) {
     m_parent = team;
 }

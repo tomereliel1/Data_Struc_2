@@ -33,3 +33,10 @@ Node<Team>* ChainByRecord::remove(int id) {
         return removedNode;
     }
 }
+
+Node<Team>* ChainByRecord::getChain() const {
+    return m_chain;
+}
+ int ChainByRecord::getSize() const {
+    return m_size;
+}

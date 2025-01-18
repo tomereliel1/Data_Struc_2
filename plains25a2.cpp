@@ -8,7 +8,7 @@ Plains::Plains() = default;
 //{
     //jockeysTable = *new HashTable<Jockey>();
     //teamsIdTable = *new HashTable<Team>();
-    //teamsRecordTable = *new HashTable<Team>();
+    //teamsRecordTable = *new HashTable<ChainByRecord>();
 
 //}
 
@@ -27,7 +27,14 @@ StatusType Plains::add_team(int teamId) {
         shared_ptr<Team> newTeam = make_shared<Team>(teamId);
         Node<Team> *teamNode = new Node<Team>(teamId, newTeam);
         teamsIdTable.insert(teamNode);
-        // need to add insert to record table
+        if (teamsRecordTable.find(0) != nullptr){
+            teamsRecordTable.find(0)->getData()->add(teamNode);
+        } else {
+            shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>(0);
+            Node<ChainByRecord> *recordNode = new Node<ChainByRecord>(0, record);
+            teamsRecordTable.insert(recordNode);
+            teamsRecordTable.find(0)->getData()->add(teamNode);
+        }
     } catch (std::bad_alloc &e){
         return StatusType::ALLOCATION_ERROR;
     }
@@ -71,14 +78,41 @@ StatusType Plains::update_match(int victoriousJockeyId, int losingJockeyId)
         shared_ptr<Jockey> winner = jockeysTable.find(victoriousJockeyId)->getData();
         winner->updateVictory();
         shared_ptr<Team> winTeam = teamsIdTable.find(winner->getTeamId())->getData()->getRoot();
+        int oldRecord = winner->getRecord();
+        Node<Team>* winTeamNode = teamsRecordTable.find(oldRecord)->getData()->remove(winTeam->getId());
+        if (teamsRecordTable.find(oldRecord)->getData()->getSize() == 0){
+            teamsRecordTable.remove(oldRecord);
+        }
         winTeam->updateVictory();
-        jockeysTable.find(victoriousJockeyId)->getData()->updateLoss();
+        int newRecord = winner->getRecord();
+        if (teamsRecordTable.find(newRecord) == nullptr){
+            shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>(newRecord);
+            Node<ChainByRecord> *recordNode = new Node<ChainByRecord>(newRecord, record);
+            teamsRecordTable.insert(recordNode);
+            teamsRecordTable.find(0)->getData()->add(winTeamNode);
+        } else {
+            teamsRecordTable.find(newRecord)->getData()->add(winTeamNode);
+        }
+
         shared_ptr<Jockey> loser = jockeysTable.find(losingJockeyId)->getData();
         loser->updateLoss();
-        jockeysTable.find(losingJockeyId)->getData()->updateLoss();
         shared_ptr<Team> loseTeam = teamsIdTable.find(loser->getTeamId())->getData()->getRoot();
+        oldRecord = loser->getRecord();
+        if (teamsRecordTable.find(oldRecord)->getData()->getSize() == 0){
+            teamsRecordTable.remove(oldRecord);
+        }
+        Node<Team>* loseTeamNode = teamsRecordTable.find(loser->getRecord())->getData()->remove(winTeam->getId());
         loseTeam->updateLoss();
-        //need to add changing in record hash table
+        newRecord = loser->getRecord();
+        if (teamsRecordTable.find(newRecord) == nullptr){
+            shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>(newRecord);
+            Node<ChainByRecord> *recordNode = new Node<ChainByRecord>(newRecord, record);
+            teamsRecordTable.insert(recordNode);
+            teamsRecordTable.find(0)->getData()->add(loseTeamNode);
+        } else {
+            teamsRecordTable.find(newRecord)->getData()->add(loseTeamNode);
+        }
+
     } catch (std::bad_alloc &e){
         return StatusType::ALLOCATION_ERROR;
     }

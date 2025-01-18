@@ -16,6 +16,7 @@
 #include "Team.h"
 #include "Node.h"
 #include "HashTable.h"
+#include "ChainByRecord.h"
 #include "wet2util.h"
 #include <iostream>
 using namespace std;
@@ -24,7 +25,7 @@ class Plains {
 private:
     HashTable<Jockey> jockeysTable;
     HashTable<Team> teamsIdTable;
-    HashTable<Team> teamsRecordTable;
+    HashTable<ChainByRecord> teamsRecordTable;
     //int m_jockeyNum;
     //int m_jockeyTableSize;
     // Here you may add anything you want
