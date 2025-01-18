@@ -23,5 +23,5 @@ public:
 
     shared_ptr<Team> getParent() const;
 
-    shared_ptr<Team> getGeneralParent();
+    shared_ptr<Team> getRoot();
 };

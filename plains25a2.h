@@ -25,8 +25,8 @@ private:
     HashTable<Jockey> jockeysTable;
     HashTable<Team> teamsIdTable;
     HashTable<Team> teamsRecordTable;
-    int m_jockeyNum;
-    int m_jockeyTableSize;
+    //int m_jockeyNum;
+    //int m_jockeyTableSize;
     // Here you may add anything you want
     //
     

@@ -4,13 +4,13 @@
 #include "plains25a2.h"
 
 
-Plains::Plains()
-{
-    jockeysTable = *new HashTable<Jockey>();
-    teamsIdTable = *new HashTable<Team>();
-    teamsRecordTable = *new HashTable<Team>();
+Plains::Plains() = default;
+//{
+    //jockeysTable = *new HashTable<Jockey>();
+    //teamsIdTable = *new HashTable<Team>();
+    //teamsRecordTable = *new HashTable<Team>();
 
-}
+//}
 
 Plains::~Plains()
 {
@@ -42,10 +42,14 @@ StatusType Plains::add_jockey(int jockeyId, int teamId)
             return StatusType::INVALID_INPUT;
         } else if (jockeysTable.find(jockeyId) != nullptr){
             return StatusType::FAILURE;
-        } else if (teamsIdTable.find(teamId) == nullptr) {
-            return StatusType::FAILURE;
-        } else if (teamsIdTable.find(teamId)->getData()->getParent() != nullptr){
-            return StatusType::FAILURE;
+        } else {
+            Node<Team> *team = teamsIdTable.find(teamId);
+            if (team == nullptr) {
+                return StatusType::FAILURE;
+            }
+            else if (team->getData()->getParent() != nullptr) {
+                return StatusType::FAILURE;
+            }
         }
         shared_ptr<Jockey> newJockey = make_shared<Jockey>(jockeyId, teamId);
         Node<Jockey> *jockeyNode = new Node<Jockey>(teamId, newJockey);
@@ -66,13 +70,13 @@ StatusType Plains::update_match(int victoriousJockeyId, int losingJockeyId)
         }
         shared_ptr<Jockey> winner = jockeysTable.find(victoriousJockeyId)->getData();
         winner->updateVictory();
-        shared_ptr<Team> winTeam = teamsIdTable.find(winner->getTeamId())->getData()->getGeneralParent();
+        shared_ptr<Team> winTeam = teamsIdTable.find(winner->getTeamId())->getData()->getRoot();
         winTeam->updateVictory();
         jockeysTable.find(victoriousJockeyId)->getData()->updateLoss();
         shared_ptr<Jockey> loser = jockeysTable.find(losingJockeyId)->getData();
         loser->updateLoss();
         jockeysTable.find(losingJockeyId)->getData()->updateLoss();
-        shared_ptr<Team> loseTeam = teamsIdTable.find(loser->getTeamId())->getData()->getGeneralParent();
+        shared_ptr<Team> loseTeam = teamsIdTable.find(loser->getTeamId())->getData()->getRoot();
         loseTeam->updateLoss();
         //need to add changing in record hash table
     } catch (std::bad_alloc &e){
@@ -94,7 +98,14 @@ StatusType Plains::unite_by_record(int record)
 
 output_t<int> Plains::get_jockey_record(int jockeyId)
 {
-    return 0;
+    if (jockeyId <= 0){
+        return {StatusType::INVALID_INPUT};
+    }
+    Node<Jockey>* jockeyNode = jockeysTable.find(jockeyId);
+    if (jockeyNode == nullptr){
+        return {StatusType::FAILURE};
+    }
+    return {jockeyNode->getData()->getRecord()};
 }
 
 output_t<int> Plains::get_team_record(int teamId)

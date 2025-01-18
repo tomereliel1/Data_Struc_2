@@ -22,13 +22,11 @@ shared_ptr<Team> Team::getParent() const {
     return m_parent;
 }
 
-shared_ptr<Team> Team::getGeneralParent() {
+shared_ptr<Team> Team::getRoot() {
     if (m_parent == nullptr){
         return make_shared<Team>(*this);
     }
-    shared_ptr<Team> generalParent;
-    while (m_parent->getParent() != nullptr) {
-        generalParent = m_parent->getParent();
-    }
-    return generalParent;
+    shared_ptr<Team> root = m_parent->getRoot();
+    m_parent = root;
+    return root;
 }
