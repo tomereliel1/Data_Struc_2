@@ -15,11 +15,19 @@ public:
 
     void setParent(shared_ptr<Team> team);
 
+    void addTeamsNum(int teamsNum);
+
+    void addRecord(int record);
+
+    void setId(int id);
+
     void updateVictory();
 
     void updateLoss();
 
     int getRecord() const;
+
+    int getTeamsNum() const;
 
     int getId() const;
 
