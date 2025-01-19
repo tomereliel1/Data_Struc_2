@@ -13,11 +13,14 @@ private:
 public:
     HashTable();
 
+    ~HashTable();
+
     Node<T>* find(int key);
 
     void insert(Node<T>* node);
 
     void remove(int key);
+
 };
 
 template <typename T>
@@ -25,6 +28,13 @@ HashTable<T>::HashTable(): m_size(2), m_keysNum(0) {
     m_arr = new Node<T>*[2]();
     m_arr[0] = nullptr;
     m_arr[1] = nullptr;
+}
+
+template <typename T>
+HashTable<T>::~HashTable() {
+    for (int i = 0; i < m_size; ++i) {
+        delete(m_arr[i]->getData());
+    }
 }
 
 template <typename T>
@@ -106,31 +116,6 @@ void HashTable<T>::remove(int key){
     }
 }
 
-
-Node<Team>* removedNode = nullptr;
-if (m_chain->getId() == id){
-removedNode = m_chain;
-m_chain = m_chain->getNext();
-removedNode->setNext(nullptr);
-m_size--;
-return removedNode;
-} else {
-Node<Team>* currentNode = m_chain;
-removedNode = m_chain->getNext();
-while (removedNode != nullptr){
-if (removedNode->getId() == id){
-currentNode->setNext(removedNode->getNext());
-removedNode->setNext(nullptr);
-m_size--;
-return removedNode;
-} else {
-currentNode = removedNode;
-removedNode = removedNode->getNext();
-}
-}
-return removedNode;
-}
-
 template <typename T>
 int HashTable<T>::fixKey(int key) {
     key = key % m_size;
@@ -152,4 +137,3 @@ void HashTable<T>::insertToArr(Node<T> *node) {
         //return node;
     }
 }
-

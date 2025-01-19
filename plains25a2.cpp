@@ -8,7 +8,10 @@ Plains::Plains() = default;
 
 Plains::~Plains()
 {
-    
+    int jockeysSize = jockeysTable.getSize();
+    for (int i = 0; i < jockeysSize; ++i) {
+        while (jockeysTable.)
+    }
 }
 
 StatusType Plains::add_team(int teamId) {

@@ -2,6 +2,10 @@
 
 ChainByRecord::ChainByRecord(int record): m_record(record),m_size(0), m_chain(nullptr) {}
 
+ChainByRecord::~ChainByRecord() {
+    delete(m_chain);
+}
+
 void ChainByRecord::add(Node<Team> *node) {
     node->setNext(m_chain);
     m_chain = node;
