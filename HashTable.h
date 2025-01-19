@@ -106,31 +106,6 @@ void HashTable<T>::remove(int key){
     }
 }
 
-
-Node<Team>* removedNode = nullptr;
-if (m_chain->getId() == id){
-removedNode = m_chain;
-m_chain = m_chain->getNext();
-removedNode->setNext(nullptr);
-m_size--;
-return removedNode;
-} else {
-Node<Team>* currentNode = m_chain;
-removedNode = m_chain->getNext();
-while (removedNode != nullptr){
-if (removedNode->getId() == id){
-currentNode->setNext(removedNode->getNext());
-removedNode->setNext(nullptr);
-m_size--;
-return removedNode;
-} else {
-currentNode = removedNode;
-removedNode = removedNode->getNext();
-}
-}
-return removedNode;
-}
-
 template <typename T>
 int HashTable<T>::fixKey(int key) {
     key = key % m_size;

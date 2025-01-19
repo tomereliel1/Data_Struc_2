@@ -123,41 +123,73 @@ StatusType Plains::merge_teams(int teamId1, int teamId2)
         if (teamId1 <= 0 || teamId2 <= 0 || teamId1 == teamId2){
             return StatusType::INVALID_INPUT;
         }
-        Node<Team>* team1Node = teamsIdTable.find(teamId1);
-        Node<Team>* team2Node = teamsIdTable.find(teamId2);
-        if (team1Node == nullptr || team2Node == nullptr){
+        Node<Team>* team1IdNode = teamsIdTable.find(teamId1);
+        Node<Team>* team2IdNode = teamsIdTable.find(teamId2);
+        if (team1IdNode == nullptr || team2IdNode == nullptr){
             return StatusType::FAILURE;
         }
-        shared_ptr<Team> team1 = team1Node->getData();
-        shared_ptr<Team> team2 = team2Node->getData();
+        shared_ptr<Team> team1 = team1IdNode->getData();
+        shared_ptr<Team> team2 = team2IdNode->getData();
+        if (team1->getParent() != nullptr || team2->getParent() != nullptr){
+            return StatusType::FAILURE;
+        }
         int team1TeamsNum = team1->getTeamsNum();
         int team2TeamsNum = team2->getTeamsNum();
         int team1Record = team1->getRecord();
         int team2Record = team2->getRecord();
-        if (team1Record > team2Record){
-            if (team1TeamsNum > team2TeamsNum) {
-                team2->setParent(team1);
-                team1->addTeamsNum(team2TeamsNum);
-                team1->addRecord(team2Record);
-            } else {
-                swapTeams(team1Node, team2Node);
-                team2->setParent(team1);
-                team1->addTeamsNum(team2TeamsNum);
-                team1->addRecord(team2Record);
 
+        Node<ChainByRecord>* recordNode = teamsRecordTable.find(team1Record);
+        shared_ptr<ChainByRecord> recordChain =recordNode->getData();
+        Node<Team>* team1RecordNode = recordChain->remove(teamId1);
+        if (recordChain->getSize() == 0){
+            teamsRecordTable.remove(team1Record);
+        }
+        recordNode = teamsRecordTable.find(team2Record);
+        recordChain =recordNode->getData();
+        Node<Team>* team2RecordNode = recordChain->remove(teamId2);
+        if (recordChain->getSize() == 0){
+            teamsRecordTable.remove(team2Record);
+        }
+        Node<Team>* insertTeam = nullptr;
+        if (team1Record >= team2Record){
+            if (team1TeamsNum >= team2TeamsNum) {
+
+                team2->setParent(team1);
+                team1->addTeamsNum(team2TeamsNum);
+                team1->addRecord(team2Record);
+                delete team2RecordNode;
+                insertTeam = team1RecordNode;
+            } else {
+                swapTeams(team1IdNode, team2IdNode);
+                team2->setParent(team1);
+                team1->addTeamsNum(team2TeamsNum);
+                team1->addRecord(team2Record);
+                delete team2RecordNode;
+                insertTeam = team1RecordNode;
             }
         } else {
-            if (team1TeamsNum < team2TeamsNum) {
+            if (team1TeamsNum <= team2TeamsNum) {
                 team1->setParent(team2);
                 team2->addTeamsNum(team1TeamsNum);
                 team2->addRecord(team1Record);
+                delete team1RecordNode;
+                insertTeam = team2RecordNode;
             } else {
-                swapTeams(team1Node, team2Node);
+                swapTeams(team1IdNode, team2IdNode);
                 team1->setParent(team2);
                 team2->addTeamsNum(team1TeamsNum);
                 team2->addRecord(team1Record);
-
+                delete team1RecordNode;
+                insertTeam = team2RecordNode;
             }
+        }
+        int newRecord = insertTeam->getData()->getRecord();
+        Node<ChainByRecord>* newRecordNode = teamsRecordTable.find(newRecord);
+        if (newRecordNode == nullptr){
+            shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>(newRecord);
+            Node<ChainByRecord> *recordNode = new Node<ChainByRecord>(newRecord, record);
+            teamsRecordTable.insert(recordNode);
+            teamsRecordTable.find(newRecord)->getData()->add(insertTeam);
         }
     } catch (std::bad_alloc &e){
         return StatusType::ALLOCATION_ERROR;
