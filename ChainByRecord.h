@@ -8,6 +8,8 @@ private:
 public:
     ChainByRecord(int record);
 
+    ~ChainByRecord();
+
     void add(Node<Team>* node);
 
     Node<Team>* remove(int id);

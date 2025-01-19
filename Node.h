@@ -10,6 +10,8 @@ private:
 public:
     Node(int id, shared_ptr<T> data);
 
+    ~Node();
+
     int getId() const;
 
     shared_ptr<T> getData() const;
@@ -25,6 +27,14 @@ public:
 
 template <typename T>
 Node<T>::Node(int id, shared_ptr<T> data): m_id(id), m_data(data), m_next(nullptr) {}
+
+template <typename T>
+Node<T>::~Node() {
+    m_data = nullptr;
+    if (m_next != nullptr) {
+        delete m_next;
+    }
+}
 
 template <typename T>
 int Node<T>::getId() const {
