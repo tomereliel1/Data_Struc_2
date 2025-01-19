@@ -2,6 +2,10 @@
 
 Jockey::Jockey(int id, int teamId):m_id(id), m_teamId(teamId) , m_record(0), m_nextJockey(nullptr){}
 
+Jockey::~Jockey(){
+    m_nextJockey = nullptr;
+}
+
 void Jockey::updateVictory() {
     m_record++;
 }

@@ -2,6 +2,10 @@
 
 Team::Team(int id):m_id(id), m_teamsNum(0) , m_record(0), m_parent(nullptr){}
 
+Team::~Team(){
+    m_parent = nullptr;
+}
+
 void Team::updateVictory() {
     m_record++;
 }

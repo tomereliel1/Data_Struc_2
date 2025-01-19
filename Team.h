@@ -13,6 +13,8 @@ private:
 public:
     Team(int id);
 
+    ~Team();
+
     void setParent(shared_ptr<Team> team);
 
     void addTeamsNum(int teamsNum);

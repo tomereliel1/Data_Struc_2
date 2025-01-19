@@ -33,8 +33,9 @@ HashTable<T>::HashTable(): m_size(2), m_keysNum(0) {
 template <typename T>
 HashTable<T>::~HashTable() {
     for (int i = 0; i < m_size; ++i) {
-        delete(m_arr[i]->getData());
+        delete(m_arr[i]);
     }
+    delete [] m_arr;
 }
 
 template <typename T>

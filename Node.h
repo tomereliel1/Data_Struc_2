@@ -30,15 +30,9 @@ Node<T>::Node(int id, shared_ptr<T> data): m_id(id), m_data(data), m_next(nullpt
 
 template <typename T>
 Node<T>::~Node() {
-    if (m_next == nullptr){
-        m_data = nullptr;
-    } else {
-        Node<T>* next = m_next;
-        while (next != nullptr){
-            m_next = nullptr;
-            m_data = nullptr;
-            delete(next);
-        }
+    m_data = nullptr;
+    if (m_next != nullptr) {
+        delete m_next;
     }
 }
 
