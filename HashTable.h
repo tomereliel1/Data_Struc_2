@@ -1,3 +1,4 @@
+#pragma once
 #include "Node.h"
 
 template <typename T>
@@ -33,7 +34,9 @@ HashTable<T>::HashTable(): m_size(2), m_keysNum(0) {
 template <typename T>
 HashTable<T>::~HashTable() {
     for (int i = 0; i < m_size; ++i) {
-        delete(m_arr[i]);
+        if (m_arr[i] != nullptr){
+            delete(m_arr[i]);
+        }
     }
     delete [] m_arr;
 }

@@ -6,6 +6,8 @@
 
 Plains::Plains() = default;
 
+Plains::~Plains() = default;
+
 StatusType Plains::add_team(int teamId) {
     try {
         if (teamId <= 0) {

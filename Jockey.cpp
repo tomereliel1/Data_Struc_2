@@ -1,10 +1,6 @@
 #include "Jockey.h"
 
-Jockey::Jockey(int id, int teamId):m_id(id), m_teamId(teamId) , m_record(0), m_nextJockey(nullptr){}
-
-Jockey::~Jockey(){
-    m_nextJockey = nullptr;
-}
+Jockey::Jockey(int id, int teamId):m_id(id), m_teamId(teamId) , m_record(0){}
 
 void Jockey::updateVictory() {
     m_record++;
@@ -20,12 +16,4 @@ int Jockey::getRecord() const {
 
 int Jockey::getTeamId() const {
     return m_teamId;
-}
-
-void Jockey::setNextJockey(Jockey *jockey) {
-    m_nextJockey = jockey;
-}
-
-Jockey* Jockey::getJockey() const {
-    return m_nextJockey;
 }
