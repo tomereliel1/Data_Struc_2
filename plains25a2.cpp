@@ -5,12 +5,6 @@
 
 
 Plains::Plains() = default;
-//{
-    //jockeysTable = *new HashTable<Jockey>();
-    //teamsIdTable = *new HashTable<Team>();
-    //teamsRecordTable = *new HashTable<ChainByRecord>();
-
-//}
 
 Plains::~Plains()
 {
@@ -89,7 +83,7 @@ StatusType Plains::update_match(int victoriousJockeyId, int losingJockeyId)
             shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>(newRecord);
             Node<ChainByRecord> *recordNode = new Node<ChainByRecord>(newRecord, record);
             teamsRecordTable.insert(recordNode);
-            teamsRecordTable.find(0)->getData()->add(winTeamNode);
+            teamsRecordTable.find(newRecord)->getData()->add(winTeamNode);
         } else {
             teamsRecordTable.find(newRecord)->getData()->add(winTeamNode);
         }
@@ -108,7 +102,7 @@ StatusType Plains::update_match(int victoriousJockeyId, int losingJockeyId)
             shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>(newRecord);
             Node<ChainByRecord> *recordNode = new Node<ChainByRecord>(newRecord, record);
             teamsRecordTable.insert(recordNode);
-            teamsRecordTable.find(0)->getData()->add(loseTeamNode);
+            teamsRecordTable.find(newRecord)->getData()->add(loseTeamNode);
         } else {
             teamsRecordTable.find(newRecord)->getData()->add(loseTeamNode);
         }
@@ -122,12 +116,74 @@ StatusType Plains::update_match(int victoriousJockeyId, int losingJockeyId)
 
 StatusType Plains::merge_teams(int teamId1, int teamId2)
 {
-    return StatusType::FAILURE;
+    try {
+        if (teamId1 <= 0 || teamId2 <= 0 || teamId1 == teamId2){
+            return StatusType::INVALID_INPUT;
+        }
+        Node<Team>* team1Node = teamsIdTable.find(teamId1);
+        Node<Team>* team2Node = teamsIdTable.find(teamId2);
+        if (team1Node == nullptr || team2Node == nullptr){
+            return StatusType::FAILURE;
+        }
+        shared_ptr<Team> team1 = team1Node->getData();
+        shared_ptr<Team> team2 = team2Node->getData();
+        int team1TeamsNum = team1->getTeamsNum();
+        int team2TeamsNum = team2->getTeamsNum();
+        int team1Record = team1->getRecord();
+        int team2Record = team2->getRecord();
+        if (team1Record > team2Record){
+            if (team1TeamsNum > team2TeamsNum) {
+                team2->setParent(team1);
+                team1->addTeamsNum(team2TeamsNum);
+                team1->addRecord(team2Record);
+            } else {
+                swapTeams(team1Node, team2Node);
+                team2->setParent(team1);
+                team1->addTeamsNum(team2TeamsNum);
+                team1->addRecord(team2Record);
+
+            }
+        } else {
+            if (team1TeamsNum < team2TeamsNum) {
+                team1->setParent(team2);
+                team2->addTeamsNum(team1TeamsNum);
+                team2->addRecord(team1Record);
+            } else {
+                swapTeams(team1Node, team2Node);
+                team1->setParent(team2);
+                team2->addTeamsNum(team1TeamsNum);
+                team2->addRecord(team1Record);
+
+            }
+        }
+    } catch (std::bad_alloc &e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+    return StatusType::SUCCESS;
 }
 
 StatusType Plains::unite_by_record(int record)
 {
-    return StatusType::FAILURE;
+    try {
+        if (record <= 0){
+            return StatusType::INVALID_INPUT;
+        }
+        Node<ChainByRecord> *positiveRecord = teamsRecordTable.find(record);
+        Node<ChainByRecord> *negativeRecord = teamsRecordTable.find(-record);
+        if (positiveRecord == nullptr || negativeRecord == nullptr){
+            return StatusType::FAILURE;
+        } else if (positiveRecord->getData()->getSize() != 1 || negativeRecord->getData()->getSize() != 1){
+            return StatusType::FAILURE;
+        }
+        Node<Team>* team1Node = positiveRecord->getData()->getChain();
+        Node<Team>* team2Node = negativeRecord->getData()->getChain();
+        int team1Id = team1Node->getId();
+        int team2Id = team2Node->getId();
+        merge_teams(team1Id, team2Id);
+    } catch (std::bad_alloc &e){
+        return StatusType::ALLOCATION_ERROR;
+    }
+    return StatusType::SUCCESS;
 }
 
 output_t<int> Plains::get_jockey_record(int jockeyId)
