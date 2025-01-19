@@ -73,8 +73,63 @@ void HashTable<T>::insert(Node<T> *node) {
     m_keysNum++;
 }
 
+template <typename T>
+void HashTable<T>::remove(int key){
+    int newKey = fixKey(key);
+    Node<T>* removedNode = m_arr[newKey];
+    if (removedNode == nullptr){
+        return;
+    } else if (removedNode->getId() == key){
+        m_arr[newKey] = removedNode->getNext();
+        removedNode->setNext(nullptr);
+        //////////////////////////////removedNode->setData(nullptr);
+        delete removedNode;
+        m_keysNum--;
+        return;
+    } else {
+        Node<T> *currentNode = removedNode;
+        while (removedNode != nullptr) {
+            if (removedNode->getId() == key) {
+                currentNode->setNext(removedNode->getNext());
+                removedNode->setNext(nullptr);
+                ///////////////////removedNode->setData(nullptr);
+                delete removedNode;
+                m_keysNum--;
+                return;
+            }
+            else {
+                currentNode = removedNode;
+                removedNode = removedNode->getNext();
+            }
+        }
+        return;
+    }
+}
 
 
+Node<Team>* removedNode = nullptr;
+if (m_chain->getId() == id){
+removedNode = m_chain;
+m_chain = m_chain->getNext();
+removedNode->setNext(nullptr);
+m_size--;
+return removedNode;
+} else {
+Node<Team>* currentNode = m_chain;
+removedNode = m_chain->getNext();
+while (removedNode != nullptr){
+if (removedNode->getId() == id){
+currentNode->setNext(removedNode->getNext());
+removedNode->setNext(nullptr);
+m_size--;
+return removedNode;
+} else {
+currentNode = removedNode;
+removedNode = removedNode->getNext();
+}
+}
+return removedNode;
+}
 
 template <typename T>
 int HashTable<T>::fixKey(int key) {
@@ -97,3 +152,4 @@ void HashTable<T>::insertToArr(Node<T> *node) {
         //return node;
     }
 }
+
