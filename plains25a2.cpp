@@ -122,6 +122,8 @@ StatusType Plains::update_match(int victoriousJockeyId, int losingJockeyId)
     return StatusType::SUCCESS;
 }
 
+
+
 StatusType Plains::merge_teams(int teamId1, int teamId2)
 {
     return StatusType::FAILURE;
