@@ -29,7 +29,7 @@ private:
     //int m_jockeyNum;
     //int m_jockeyTableSize;
     // Here you may add anything you want
-    //
+
     void swapTeams (Node<Team>* team1Node, Node<Team>* team2Node){
         shared_ptr<Team >team1 = team1Node->getData();
         shared_ptr<Team >team2 = team2Node->getData();
