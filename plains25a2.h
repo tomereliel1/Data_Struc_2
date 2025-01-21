@@ -31,18 +31,9 @@ private:
     //int m_jockeyTableSize;
     // Here you may add anything you want
 
-    void swapTeams (Node<Team>* team1Node, Node<Team>* team2Node){
-        shared_ptr<Team >team1 = team1Node->getData();
-        shared_ptr<Team >team2 = team2Node->getData();
-        int teamId1 = team1->getId();
-        int teamId2 = team2->getId();
-        team1Node->setData(team2);
-        team1Node->setId(teamId2);
-        team2Node->setData(team1);
-        team2Node->setId(teamId1);
-        team1->setId(teamId2);
-        team2->setId(teamId1);
-    }
+    void swapTeams (Node<Team>* team1Node, Node<Team>* team2Node);
+
+    shared_ptr<Team> getRootTeam(int teamId);
 public:
     // <DO-NOT-MODIFY> {
     Plains();

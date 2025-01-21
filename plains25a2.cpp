@@ -16,15 +16,20 @@ StatusType Plains::add_team(int teamId) {
             return StatusType::FAILURE;
         }
         shared_ptr<Team> newTeam = make_shared<Team>(teamId);
-        Node<Team> *teamNode = new Node<Team>(teamId, newTeam);
-        teamsIdTable.insert(teamNode);
+        Node<Team> *teamIdNode = new Node<Team>(teamId, newTeam);
+        teamsIdTable.insert(teamIdNode);
+        Node<Team> *teamRecordNode = new Node<Team>(teamId, newTeam);
+
+        //std::cout << "winTeam address: " << newTeam.get() << std::endl;
+        //std::cout << "Id) address: " << teamIdNode->getData().get() << std::endl;
+        //::cout << "rec address: " << teamRecordNode->getData().get() << std::endl;
         if (teamsRecordTable.find(0) != nullptr){
-            teamsRecordTable.find(0)->getData()->add(teamNode);
+            teamsRecordTable.find(0)->getData()->add(teamRecordNode);
         } else {
             shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>(0);
             Node<ChainByRecord> *recordNode = new Node<ChainByRecord>(0, record);
             teamsRecordTable.insert(recordNode);
-            teamsRecordTable.find(0)->getData()->add(teamNode);
+            teamsRecordTable.find(0)->getData()->add(teamRecordNode);
         }
     } catch (std::bad_alloc &e){
         return StatusType::ALLOCATION_ERROR;
@@ -50,7 +55,7 @@ StatusType Plains::add_jockey(int jockeyId, int teamId)
             }
         }
         shared_ptr<Jockey> newJockey = make_shared<Jockey>(jockeyId, teamId);
-        Node<Jockey> *jockeyNode = new Node<Jockey>(teamId, newJockey);
+        Node<Jockey> *jockeyNode = new Node<Jockey>(jockeyId, newJockey);
         jockeysTable.insert(jockeyNode);
     } catch (std::bad_alloc &e){
         return StatusType::ALLOCATION_ERROR;
@@ -61,14 +66,26 @@ StatusType Plains::add_jockey(int jockeyId, int teamId)
 StatusType Plains::update_match(int victoriousJockeyId, int losingJockeyId)
 {
     try {
-        if (victoriousJockeyId <= 0 || losingJockeyId <= 0){
+        if (victoriousJockeyId <= 0 || losingJockeyId <= 0 || victoriousJockeyId == losingJockeyId){
             return StatusType::INVALID_INPUT;
         } else if (jockeysTable.find(victoriousJockeyId) == nullptr || jockeysTable.find(losingJockeyId) == nullptr){
             return StatusType::FAILURE;
         }
+
         shared_ptr<Jockey> winner = jockeysTable.find(victoriousJockeyId)->getData();
+        int teamId = winner->getTeamId();
+        shared_ptr<Team> winTeam = getRootTeam(teamId);
+
+        shared_ptr<Jockey> loser = jockeysTable.find(losingJockeyId)->getData();
+        teamId = loser->getTeamId();
+        shared_ptr<Team> loseTeam = getRootTeam(teamId);
+
+        if (winTeam == loseTeam){
+            return StatusType::FAILURE;
+        }
         winner->updateVictory();
-        shared_ptr<Team> winTeam = teamsIdTable.find(winner->getTeamId())->getData()->getRoot();
+        loser->updateLoss();
+
         int oldRecord = winTeam->getRecord();
         Node<ChainByRecord>* oldRecordNode = teamsRecordTable.find(oldRecord);
         Node<Team>* winTeamNode = oldRecordNode->getData()->remove(winTeam->getId());
@@ -77,19 +94,19 @@ StatusType Plains::update_match(int victoriousJockeyId, int losingJockeyId)
         }
         winTeam->updateVictory();
         int newRecord = winTeam->getRecord();
+        //std::cout << "winTeam address: " << winTeam.get() << std::endl;
+        //std::cout << "winTeamNode->getData() address: " << winTeamNode->getData().get() << std::endl;
         Node<ChainByRecord>* newRecordNode = teamsRecordTable.find(newRecord);
         if (newRecordNode == nullptr){
             shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>(newRecord);
             Node<ChainByRecord> *recordNode = new Node<ChainByRecord>(newRecord, record);
             teamsRecordTable.insert(recordNode);
-            teamsRecordTable.find(newRecord)->getData()->add(winTeamNode);
+            record->add(winTeamNode);
         } else {
             newRecordNode->getData()->add(winTeamNode);
         }
 
-        shared_ptr<Jockey> loser = jockeysTable.find(losingJockeyId)->getData();
-        loser->updateLoss();
-        shared_ptr<Team> loseTeam = teamsIdTable.find(loser->getTeamId())->getData()->getRoot();
+
         oldRecord = loseTeam->getRecord();
         oldRecordNode = teamsRecordTable.find(oldRecord);
         Node<Team>* loseTeamNode = oldRecordNode->getData()->remove(loseTeam->getId());
@@ -103,7 +120,7 @@ StatusType Plains::update_match(int victoriousJockeyId, int losingJockeyId)
             shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>(newRecord);
             Node<ChainByRecord> *recordNode = new Node<ChainByRecord>(newRecord, record);
             teamsRecordTable.insert(recordNode);
-            teamsRecordTable.find(0)->getData()->add(loseTeamNode);
+            teamsRecordTable.find(newRecord)->getData()->add(loseTeamNode);
         } else {
             newRecordNode->getData()->add(loseTeamNode);
         }
@@ -186,7 +203,9 @@ StatusType Plains::merge_teams(int teamId1, int teamId2)
             shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>(newRecord);
             Node<ChainByRecord> *recordNode = new Node<ChainByRecord>(newRecord, record);
             teamsRecordTable.insert(recordNode);
-            teamsRecordTable.find(newRecord)->getData()->add(insertTeam);
+            record->add(insertTeam);
+        } else {
+            newRecordNode->getData()->add(insertTeam);
         }
     } catch (std::bad_alloc &e){
         return StatusType::ALLOCATION_ERROR;
@@ -245,4 +264,26 @@ output_t<int> Plains::get_team_record(int teamId)
     }
     return team->getRecord();
     return 0;
+}
+
+void Plains::swapTeams(Node<Team>* team1Node, Node<Team>* team2Node){
+    shared_ptr<Team >team1 = team1Node->getData();
+    shared_ptr<Team >team2 = team2Node->getData();
+    int teamId1 = team1->getId();
+    int teamId2 = team2->getId();
+    team1Node->setData(team2);
+    team1Node->setId(teamId2);
+    team2Node->setData(team1);
+    team2Node->setId(teamId1);
+    team1->setId(teamId2);
+    team2->setId(teamId1);
+}
+
+shared_ptr<Team> Plains::getRootTeam(int teamId) {
+    shared_ptr<Team> team = teamsIdTable.find(teamId)->getData();
+    shared_ptr<Team> root = team->getRoot();
+    if (root == nullptr){
+        return team;
+    }
+    return root;
 }

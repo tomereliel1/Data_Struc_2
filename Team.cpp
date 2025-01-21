@@ -47,10 +47,15 @@ shared_ptr<Team> Team::getParent() const {
 }
 
 shared_ptr<Team> Team::getRoot() {
-    if (m_parent == nullptr){
-        return make_shared<Team>(*this);
+    if (m_parent != nullptr){
+        if (m_parent->m_parent == nullptr){
+            return m_parent;
+        } else {
+            shared_ptr<Team> root = m_parent->getRoot();
+            m_parent = root;
+            return root;
+        }
+    } else {
+        return nullptr;
     }
-    shared_ptr<Team> root = m_parent->getRoot();
-    m_parent = root;
-    return root;
 }
