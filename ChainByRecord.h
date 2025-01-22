@@ -7,13 +7,13 @@ private:
     int m_size;
     Node<Team>* m_chain;
 public:
-    ChainByRecord(int record);
+    explicit ChainByRecord(int record);
 
     ~ChainByRecord();
 
     void add(Node<Team>* node);
 
-    Node<Team>* remove(int id);
+    Node<Team>* remove(int team);
 
     Node<Team>* getChain() const;
 

@@ -1,10 +1,23 @@
 #include "Team.h"
 
-Team::Team(int id):m_id(id), m_teamsNum(0) , m_record(0), m_parent(nullptr){}
+Team::Team(int id):m_id(id), m_teamsNum(1) , m_record(0), m_parent(nullptr){
+}
 
 Team::~Team(){
     m_parent = nullptr;
 }
+
+void Team::setId(int id) {
+    m_id = id;
+}
+
+void Team::setParent(shared_ptr<Team> team) {
+    m_parent = team;
+}
+/*
+void Team::setRecordNode(Node<Team> *node) {
+    m_recordNode = node;
+}*/
 
 void Team::updateVictory() {
     m_record++;
@@ -26,9 +39,7 @@ int Team::getId() const {
     return m_id;
 }
 
-void Team::setParent(shared_ptr<Team> team) {
-    m_parent = team;
-}
+
 
 void Team::addTeamsNum(int teamsNum) {
     m_teamsNum += teamsNum;
@@ -38,9 +49,7 @@ void Team::addRecord(int record) {
     m_record += record;
 }
 
-void Team::setId(int id) {
-    m_id = id;
-}
+
 
 shared_ptr<Team> Team::getParent() const {
     return m_parent;
@@ -59,3 +68,7 @@ shared_ptr<Team> Team::getRoot() {
         return nullptr;
     }
 }
+/*
+Node<Team>* Team::getRecordNode() const {
+    return m_recordNode;
+}*/

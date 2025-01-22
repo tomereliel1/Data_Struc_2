@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include "Node.h"
 using std::shared_ptr;
 using std::make_shared;
 
@@ -10,19 +11,22 @@ private:
     int m_teamsNum;
     int m_record;
     shared_ptr<Team> m_parent;
+    //Node<Team> * m_recordNode;
 
 public:
-    Team(int id);
+    explicit Team(int id);
 
     ~Team();
 
     void setParent(shared_ptr<Team> team);
 
+    void setId(int id);
+
+    void setRecordNode(Node<Team>* node);
+
     void addTeamsNum(int teamsNum);
 
     void addRecord(int record);
-
-    void setId(int id);
 
     void updateVictory();
 
@@ -37,4 +41,6 @@ public:
     shared_ptr<Team> getParent() const;
 
     shared_ptr<Team> getRoot();
+
+    Node<Team>* getRecordNode() const;
 };

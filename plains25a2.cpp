@@ -16,10 +16,11 @@ StatusType Plains::add_team(int teamId) {
             return StatusType::FAILURE;
         }
         shared_ptr<Team> newTeam = make_shared<Team>(teamId);
+        int a = 4;
         Node<Team> *teamIdNode = new Node<Team>(teamId, newTeam);
         teamsIdTable.insert(teamIdNode);
         Node<Team> *teamRecordNode = new Node<Team>(teamId, newTeam);
-
+        //newTeam->setRecordNode(teamRecordNode);
         //std::cout << "winTeam address: " << newTeam.get() << std::endl;
         //std::cout << "Id) address: " << teamIdNode->getData().get() << std::endl;
         //::cout << "rec address: " << teamRecordNode->getData().get() << std::endl;
@@ -31,6 +32,7 @@ StatusType Plains::add_team(int teamId) {
             teamsRecordTable.insert(recordNode);
             teamsRecordTable.find(0)->getData()->add(teamRecordNode);
         }
+        //teamsRecordTable.updateKeysNum(1);
     } catch (std::bad_alloc &e){
         return StatusType::ALLOCATION_ERROR;
     }
@@ -154,13 +156,13 @@ StatusType Plains::merge_teams(int teamId1, int teamId2)
 
         Node<ChainByRecord>* recordNode = teamsRecordTable.find(team1Record);
         shared_ptr<ChainByRecord> recordChain =recordNode->getData();
-        Node<Team>* team1RecordNode = recordChain->remove(teamId1);
+        Node<Team>* team1RecordNode = recordChain->remove(team1->getId());
         if (recordChain->getSize() == 0){
             teamsRecordTable.remove(team1Record);
         }
         recordNode = teamsRecordTable.find(team2Record);
         recordChain =recordNode->getData();
-        Node<Team>* team2RecordNode = recordChain->remove(teamId2);
+        Node<Team>* team2RecordNode = recordChain->remove(team2->getId());
         if (recordChain->getSize() == 0){
             teamsRecordTable.remove(team2Record);
         }
@@ -175,11 +177,12 @@ StatusType Plains::merge_teams(int teamId1, int teamId2)
                 insertTeam = team1RecordNode;
             } else {
                 swapTeams(team1IdNode, team2IdNode);
-                team2->setParent(team1);
-                team1->addTeamsNum(team2TeamsNum);
-                team1->addRecord(team2Record);
-                delete team2RecordNode;
-                insertTeam = team1RecordNode;
+                team1->setParent(team2);
+                team2->addTeamsNum(team1TeamsNum);
+                team2->addRecord(team1Record);
+                delete team1RecordNode;
+                team2RecordNode->setId(teamId1);
+                insertTeam = team2RecordNode;
             }
         } else {
             if (team1TeamsNum <= team2TeamsNum) {
@@ -190,12 +193,14 @@ StatusType Plains::merge_teams(int teamId1, int teamId2)
                 insertTeam = team2RecordNode;
             } else {
                 swapTeams(team1IdNode, team2IdNode);
-                team1->setParent(team2);
-                team2->addTeamsNum(team1TeamsNum);
-                team2->addRecord(team1Record);
-                delete team1RecordNode;
-                insertTeam = team2RecordNode;
-            }
+                team2->setParent(team1);
+                team1->addTeamsNum(team2TeamsNum);
+                team1->addRecord(team2Record);
+                delete team2RecordNode;
+                team1RecordNode->setId(teamId2);
+                insertTeam = team1RecordNode;
+
+             }
         }
         int newRecord = insertTeam->getData()->getRecord();
         Node<ChainByRecord>* newRecordNode = teamsRecordTable.find(newRecord);
@@ -207,6 +212,7 @@ StatusType Plains::merge_teams(int teamId1, int teamId2)
         } else {
             newRecordNode->getData()->add(insertTeam);
         }
+        //teamsRecordTable.updateKeysNum(-1);
     } catch (std::bad_alloc &e){
         return StatusType::ALLOCATION_ERROR;
     }
@@ -272,9 +278,9 @@ void Plains::swapTeams(Node<Team>* team1Node, Node<Team>* team2Node){
     int teamId1 = team1->getId();
     int teamId2 = team2->getId();
     team1Node->setData(team2);
-    team1Node->setId(teamId2);
+    //team1Node->setId(teamId2);
     team2Node->setData(team1);
-    team2Node->setId(teamId1);
+    //team2Node->setId(teamId1);
     team1->setId(teamId2);
     team2->setId(teamId1);
 }

@@ -1,5 +1,5 @@
 #include "ChainByRecord.h"
-
+#include <iostream>
 ChainByRecord::ChainByRecord(int record): m_record(record),m_size(0), m_chain(nullptr) {}
 
 ChainByRecord::~ChainByRecord() {
@@ -13,6 +13,17 @@ void ChainByRecord::add(Node<Team> *node) {
     m_chain = node;
     m_size++;
 }
+/*
+
+
+void ChainByRecord::add(Node<Team> *node) {
+    if (m_chain != nullptr){
+        m_chain->setPrevious(node);
+    }
+    node->setNext(m_chain);
+    m_chain = node;
+    m_size++;
+}*/
 
 Node<Team>* ChainByRecord::remove(int id) {
     Node<Team>* removedNode = nullptr;

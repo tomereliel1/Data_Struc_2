@@ -22,6 +22,9 @@ public:
 
     void remove(int key);
 
+    void updateSize();
+
+    void updateKeysNum(int value);
 };
 
 template <typename T>
@@ -64,24 +67,7 @@ void HashTable<T>::insert(Node<T> *node) {
     if (this->find(key) != nullptr){
         return;
     } else if (m_keysNum + 1 == m_size / 2) {
-        int oldSize = m_size;
-        m_size = 2 * oldSize;
-        Node<T>** newArr = new Node<T> *[m_size]();
-        Node<T>** temp = m_arr;
-        m_arr = newArr;
-        for (int i = 0; i < m_size; i++) {
-            newArr[i] = nullptr;
-        }
-        for (int i = 0; i < oldSize; i++) {
-            Node<T> *current = temp[i];
-            while (current != nullptr) {
-                Node<T> *next = current->getNext();
-                current->setNext(nullptr);
-                insertToArr(current);
-                current = next;
-            }
-        }
-        delete [] temp;
+        updateSize();
     }
     insertToArr(node);
     m_keysNum++;
@@ -140,4 +126,34 @@ void HashTable<T>::insertToArr(Node<T> *node) {
         m_arr[newKey] = node;
         //return node;
     }
+}
+
+template<typename T>
+void HashTable<T>::updateSize() {
+    int oldSize = m_size;
+    m_size = 2 * oldSize;
+    Node<T>** newArr = new Node<T> *[m_size]();
+    Node<T>** temp = m_arr;
+    m_arr = newArr;
+    for (int i = 0; i < m_size; i++) {
+        newArr[i] = nullptr;
+    }
+    for (int i = 0; i < oldSize; i++) {
+        Node<T> *current = temp[i];
+        while (current != nullptr) {
+            Node<T> *next = current->getNext();
+            current->setNext(nullptr);
+            insertToArr(current);
+            current = next;
+        }
+    }
+    delete [] temp;
+}
+
+template<typename T>
+void HashTable<T>::updateKeysNum(int value) {
+    if (m_keysNum + value == m_size / 2) {
+        updateSize();
+    }
+    m_keysNum += value;
 }
