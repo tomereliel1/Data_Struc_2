@@ -3,11 +3,10 @@
 #include "Team.h"
 class ChainByRecord{
 private:
-    int m_record;
     int m_size;
     Node<Team>* m_chain;
 public:
-    explicit ChainByRecord(int record);
+    ChainByRecord();
 
     ~ChainByRecord();
 

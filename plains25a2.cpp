@@ -26,7 +26,7 @@ StatusType Plains::add_team(int teamId) {
             chainRecordNode->getData()->add(teamRecordNode);
         }
         else {
-            shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>(0);
+            shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>();
             Node<ChainByRecord> *recordNode = new Node<ChainByRecord>(0, record);
             teamsRecordTable.insert(recordNode);
             teamsRecordTable.find(0)->getData()->add(teamRecordNode);
@@ -102,7 +102,7 @@ StatusType Plains::update_match(int victoriousJockeyId, int losingJockeyId) {
         int newRecord = winTeam->getRecord();
         Node<ChainByRecord> *newRecordNode = teamsRecordTable.find(newRecord);
         if (newRecordNode == nullptr) {
-            shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>(newRecord);
+            shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>();
             Node<ChainByRecord> *recordNode = new Node<ChainByRecord>(newRecord, record);
             teamsRecordTable.insert(recordNode);
             record->add(winTeamNode);
@@ -122,7 +122,7 @@ StatusType Plains::update_match(int victoriousJockeyId, int losingJockeyId) {
         newRecord = loseTeam->getRecord();
         newRecordNode = teamsRecordTable.find(newRecord);
         if (newRecordNode == nullptr) {
-            shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>(newRecord);
+            shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>();
             Node<ChainByRecord> *recordNode = new Node<ChainByRecord>(newRecord, record);
             teamsRecordTable.insert(recordNode);
             teamsRecordTable.find(newRecord)->getData()->add(loseTeamNode);
@@ -213,7 +213,7 @@ StatusType Plains::merge_teams(int teamId1, int teamId2) {
         int newRecord = insertTeam->getData()->getRecord();
         Node<ChainByRecord> *newRecordNode = teamsRecordTable.find(newRecord);
         if (newRecordNode == nullptr) {
-            shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>(newRecord);
+            shared_ptr<ChainByRecord> record = make_shared<ChainByRecord>();
             Node<ChainByRecord> *recordNode = new Node<ChainByRecord>(newRecord, record);
             teamsRecordTable.insert(recordNode);
             record->add(insertTeam);
