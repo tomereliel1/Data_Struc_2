@@ -27,9 +27,6 @@ private:
     HashTable<Jockey> jockeysTable;
     HashTable<Team> teamsIdTable;
     HashTable<ChainByRecord> teamsRecordTable;
-    //int m_jockeyNum;
-    //int m_jockeyTableSize;
-    // Here you may add anything you want
 
     void swapTeams (Node<Team>* team1Node, Node<Team>* team2Node);
 

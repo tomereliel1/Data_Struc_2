@@ -118,11 +118,9 @@ void HashTable<T>::insertToArr(Node<T> *node) {
     int newKey = fixKey(node->getId());
     if (m_arr[newKey] == nullptr){
         m_arr[newKey] = node;
-        //return node;
     } else {
         node->setNext(m_arr[newKey]);
         m_arr[newKey] = node;
-        //return node;
     }
 }
 
