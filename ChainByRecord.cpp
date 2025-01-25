@@ -7,13 +7,13 @@ ChainByRecord::~ChainByRecord() {
         delete(m_chain);
     }
 }
-
+/*
 void ChainByRecord::add(Node<Team> *node) {
     node->setNext(m_chain);
     m_chain = node;
     m_size++;
 }
-/*
+*/
 
 
 void ChainByRecord::add(Node<Team> *node) {
@@ -23,8 +23,28 @@ void ChainByRecord::add(Node<Team> *node) {
     node->setNext(m_chain);
     m_chain = node;
     m_size++;
-}*/
+}
 
+Node<Team>* ChainByRecord::remove(shared_ptr<Team> team) {
+    Node<Team>* removedNode = team->getRecordNode();
+    Node<Team>* nextNode = removedNode->getNext();
+    Node<Team>* preNode = removedNode->getPrevious();
+    if (nextNode != nullptr){
+        nextNode->setPrevious(preNode);
+    }
+    if (m_chain == removedNode){
+        m_chain = nextNode;
+    } else {
+        preNode->setNext(nextNode);
+    }
+    removedNode->setNext(nullptr);
+    removedNode->setPrevious(nullptr);
+    m_size--;
+    return removedNode;
+}
+
+
+/*
 Node<Team>* ChainByRecord::remove(int id) {
     Node<Team>* removedNode = nullptr;
     if (m_chain->getId() == id){
@@ -50,7 +70,7 @@ Node<Team>* ChainByRecord::remove(int id) {
         return removedNode;
     }
 }
-
+*/
 Node<Team>* ChainByRecord::getChain() const {
     return m_chain;
 }

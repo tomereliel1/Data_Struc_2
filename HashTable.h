@@ -82,7 +82,6 @@ void HashTable<T>::remove(int key){
     } else if (removedNode->getId() == key){
         m_arr[newKey] = removedNode->getNext();
         removedNode->setNext(nullptr);
-        //////////////////////////////removedNode->setData(nullptr);
         delete removedNode;
         m_keysNum--;
         return;
@@ -92,7 +91,6 @@ void HashTable<T>::remove(int key){
             if (removedNode->getId() == key) {
                 currentNode->setNext(removedNode->getNext());
                 removedNode->setNext(nullptr);
-                ///////////////////removedNode->setData(nullptr);
                 delete removedNode;
                 m_keysNum--;
                 return;

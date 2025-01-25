@@ -8,7 +8,7 @@ private:
     int m_id;
     shared_ptr<T> m_data;
     Node* m_next;
-    //Node* m_previous;
+    Node* m_previous;
 public:
     Node(int id, shared_ptr<T> data);
 
@@ -20,7 +20,7 @@ public:
 
     Node<T>* getNext() const;
 
-    //Node<T>* getPrevious() const;
+    Node<T>* getPrevious() const;
 
     void setId(int id);
 
@@ -28,22 +28,19 @@ public:
 
     void setNext(Node* next);
 
-    //void setPrevious(Node* previous);
+    void setPrevious(Node* previous);
 };
 
 template <typename T>
-Node<T>::Node(int id, shared_ptr<T> data): m_id(id), m_data(data), m_next(nullptr)/*, m_previous(
-        nullptr)*/ {}
+Node<T>::Node(int id, shared_ptr<T> data): m_id(id), m_data(data), m_next(nullptr), m_previous(
+        nullptr) {}
 
 template <typename T>
 Node<T>::~Node() {
     m_data = nullptr;
     if (m_next != nullptr) {
         delete m_next;
-    }/*
-    if (m_previous != nullptr){
-        delete m_previous;
-    }*/
+    }
 }
 
 template <typename T>
@@ -60,11 +57,11 @@ template <typename T>
 Node<T>* Node<T>::getNext() const {
     return m_next;
 }
-/*
+
 template <typename T>
 Node<T>* Node<T>::getPrevious() const {
     return m_previous;
-}*/
+}
 
 template <typename T>
 void Node<T>::setId(int id) {
@@ -80,9 +77,8 @@ template <typename T>
 void Node<T>::setNext(Node<T> *next) {
     m_next = next;
 }
-/*
+
 template <typename T>
 void Node<T>::setPrevious(Node<T> *previous){
     m_previous = previous;
 }
-*/

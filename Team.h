@@ -11,7 +11,7 @@ private:
     int m_teamsNum;
     int m_record;
     shared_ptr<Team> m_parent;
-    //Node<Team> * m_recordNode;
+    Node<Team> * m_recordNode;
 
 public:
     explicit Team(int id);

@@ -13,7 +13,7 @@ public:
 
     void add(Node<Team>* node);
 
-    Node<Team>* remove(int team);
+    Node<Team>* remove(shared_ptr<Team> team);
 
     Node<Team>* getChain() const;
 
